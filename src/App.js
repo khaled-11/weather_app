@@ -30,6 +30,7 @@ function App() {
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
+    console.log("Radio Change")
     if (e.target.value === "new_york"){
       setLoading("loading")
       if (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127"){
@@ -44,6 +45,7 @@ function App() {
 
   // Function to call the geocoding API
   const callGeoCodingAPI = (type) =>{
+    console.log("Geolocation Call")
     var url;
     if (type === "zipcode"){
       url = `http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`
@@ -62,7 +64,7 @@ function App() {
   }
 
   // Function to handle the search button
-  async function handleSearchButtonClick(){
+  const handleSearchButtonClick = () =>{
     setLoading('loading')
     if (selectedRadioOption === "search_city_name"){
       if (cityName.current.value === ""){
