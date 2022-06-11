@@ -3,26 +3,28 @@ import axios from "axios";
 
 // The main app function
 function App() {
-  // State hooks for radio options, gps coordinates, weather data, and loading state.
+  // State hooks for radio options, gps coordinates, weather data, and loading status.
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('world_wide');
   const [coordinates, setCoordinates] = React.useState(["0","0"])
   const [weatherData, setWeatherData] = React.useState({});
   const [loaded, setLoading] =  React.useState("loading");
   // Hooks reference to inputs and functions 
-  const lon = React.useRef(0);
-  const lat = React.useRef(0);
+  const lon = React.useRef();
+  const lat = React.useRef();
   const zipCode = React.useRef();
   const cityName = React.useRef();
 
   // Use Effect hook to call the API
   React.useEffect(() => {
     console.log("API Call")
-    axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
-      setWeatherData(response.data)
-      setLoading('data_loaded')
-    }).catch(() => {
-        setLoading("data_error")
-    });
+    setTimeout(function(){
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
+        setWeatherData(response.data)
+        setLoading('data_loaded')
+      }).catch(() => {
+          setLoading("data_error")
+      });
+    },100)
   }, [coordinates])
 
   // Function to handle radio options change
