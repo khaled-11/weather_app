@@ -8,6 +8,7 @@ function App() {
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
   const [weatherData, setWeatherData] = React.useState({});
   const [loaded, setLoading] =  React.useState("loading");
+  const [lastSearchData, setLastSearchData] = React.useState({cityName:'new york', zipCode:""});
   // Hooks reference to inputs and functions 
   const lon = React.useRef();
   const lat = React.useRef();
@@ -31,13 +32,33 @@ function App() {
   const handleRadioChange = (e) => {
     if (e.target.value === "new_york"){
       setLoading("loading")
-      if (coordinates[0]!=="0" && coordinates[1]!=="0"){
+      if (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127"){
         setCoordinates(["-74.006","40.7127"])
+        setLastSearchData({cityName:"", zipCode:""})
       } else {
         setLoading('data_loaded')
       }
     }
     setSelectedRadioOption(e.target.value)
+  }
+
+  // Function to call the geocoding API
+  const callGeoCodingAPI = (type) =>{
+    var url;
+    if (type === "zipcode"){
+      url = `http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`
+    } else {
+      url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`
+    }
+    axios.get(url).then((response) => {
+      if (response.data.lon && response.data.lat){
+        setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
+      } else if (response.data[0] && response.data[0].lon && response.data[0].lat){
+        setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
+      }
+    }).catch(() => {
+      setLoading("data_error")
+    });
   }
 
   // Function to handle the search button
@@ -47,37 +68,23 @@ function App() {
       if (cityName.current.value === ""){
         setLoading('data_error')
       } else {
-        axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
-          if (response.data[0] && response.data[0].lon && response.data[0].lat){
-            if (coordinates[0]!== parseFloat(response.data[0].lon.toFixed(4)).toString() && coordinates[1]!==parseFloat(response.data[0].lat.toFixed(4)).toString()){
-              setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
-            } else {
-              setLoading('data_loaded')
-            }
-          } else {
-            setLoading('data_error')
-          }
-        }).catch(() => {
-            setLoading("data_error")
-        });
+        if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
+          setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
+          callGeoCodingAPI('city_name')
+        } else {
+          setLoading("data_loaded")
+        }
       }
     } else if (selectedRadioOption === "search_zipcode"){
       if (zipCode.current.value === ""){
         setLoading('data_error')
       } else {
-        axios.get(`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
-          if (response.data.lon && response.data.lat){
-            if (coordinates[0]!== response.data.lon.toString() && coordinates[1]!==response.data.lat.toString()){
-              setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
-            } else {
-              setLoading('data_loaded')
-            }
-          } else {
-            setLoading('data_error')
-          }
-        }).catch(() => {
-            setLoading("data_error")
-        });
+        if(lastSearchData.zipCode!==zipCode.current.value.toString()){
+          setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
+          callGeoCodingAPI('zipcode')
+        } else {
+          setLoading("data_loaded")
+        }
       }
     } else {
       if (lat.current.value === "" || lon.current.value === ""){
@@ -87,6 +94,7 @@ function App() {
           setLoading("data_loaded")
         } else {
           setCoordinates([lon.current.value, lat.current.value])
+          setLastSearchData({cityName:"", zipCode:""})
         }
       }
     }
