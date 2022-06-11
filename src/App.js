@@ -4,8 +4,8 @@ import axios from "axios";
 // The main app function
 function App() {
   // State hooks for radio options, gps coordinates, weather data, and loading status.
-  const [selectedRadioOption, setSelectedRadioOption] = React.useState('world_wide');
-  const [coordinates, setCoordinates] = React.useState(["0","0"])
+  const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
+  const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
   const [weatherData, setWeatherData] = React.useState({});
   const [loaded, setLoading] =  React.useState("loading");
   // Hooks reference to inputs and functions 
@@ -29,10 +29,12 @@ function App() {
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
-    if (e.target.value === "world_wide"){
+    if (e.target.value === "new_york"){
       setLoading("loading")
       if (coordinates[0]!=="0" && coordinates[1]!=="0"){
-        setCoordinates(["0","0"])
+        setCoordinates(["-74.006","40.7127"])
+      } else {
+        setLoading('data_loaded')
       }
     }
     setSelectedRadioOption(e.target.value)
@@ -47,7 +49,11 @@ function App() {
       } else {
         axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
           if (response.data[0] && response.data[0].lon && response.data[0].lat){
-            setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
+            if (coordinates[0]!== parseFloat(response.data[0].lon.toFixed(4)).toString() && coordinates[1]!==parseFloat(response.data[0].lat.toFixed(4)).toString()){
+              setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
+            } else {
+              setLoading('data_loaded')
+            }
           } else {
             setLoading('data_error')
           }
@@ -61,7 +67,11 @@ function App() {
       } else {
         axios.get(`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
           if (response.data.lon && response.data.lat){
-            setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
+            if (coordinates[0]!== response.data.lon.toString() && coordinates[1]!==response.data.lat.toString()){
+              setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
+            } else {
+              setLoading('data_loaded')
+            }
           } else {
             setLoading('data_error')
           }
@@ -86,7 +96,7 @@ function App() {
     <div>
       <div style={{textAlign:'center'}}>
         <br/>
-        <label><input onChange={handleRadioChange} checked={selectedRadioOption === "world_wide"} value = "world_wide" type="radio" />World Wide</label>
+        <label><input onChange={handleRadioChange} checked={selectedRadioOption === "new_york"} value = "new_york" type="radio" />New York</label>
         <label><input onChange={handleRadioChange} checked={selectedRadioOption === "search_city_name"} value = "search_city_name" type="radio" />By City Name</label>
         <br/>
         <label><input onChange={handleRadioChange} checked={selectedRadioOption === "search_zipcode"} value = "search_zipcode" type="radio" />By Zip Code</label>
