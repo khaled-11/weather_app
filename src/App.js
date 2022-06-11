@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React from 'react';
+import axios from "axios";
 
 // The main app function
 function App() {
@@ -7,53 +8,31 @@ function App() {
   const [coordinates, setCoordinates] = React.useState(["0","0"])
   const [weatherData, setWeatherData] = React.useState({});
   const [loaded, setLoading] =  React.useState("loading");
-  // Reference to inputs hooks
+  // Hooks reference to inputs and functions 
   const lon = React.useRef(0);
   const lat = React.useRef(0);
   const zipCode = React.useRef();
   const cityName = React.useRef();
-  const fetchAPI = useRef(()=>{})
 
   // Use Effect hook to call the API
   React.useEffect(() => {
-    fetchAPI.current()
-  }, [coordinates])
-
-  // Function to call the weather API
-  fetchAPI.current = () => {  
     console.log("API Call")
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`)
-    .then(res => res.json())
-    .then(
-      (result) => {
-        setTimeout(function(){
-          setWeatherData(result)
-          setLoading('data_loaded')
-        }, 200)
-      },
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
-      (error) => {
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
+      setWeatherData(response.data)
+      setLoading('data_loaded')
+    }).catch(() => {
         setLoading("data_error")
-      }
-    )
-    // const res = await fetch (`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`, {
-    //   method: 'GET',
-    // })
-    // const resJSON = await res.json()
-    // if (resJSON.cod === 200){
-    //   setTimeout(function(){
-    //     setWeatherData(resJSON)
-    //     setLoading('data_loaded')
-    //   }, 200)
-    // } else {
-    //   setLoading('data_error')
-    // }
-  }
+    });
+  }, [coordinates])
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
+    if (e.target.value === "world_wide"){
+      setLoading("loading")
+      if (coordinates[0]!=="0" && coordinates[1]!=="0"){
+        setCoordinates(["0","0"])
+      }
+    }
     setSelectedRadioOption(e.target.value)
   }
 
@@ -61,19 +40,34 @@ function App() {
   async function handleSearchButtonClick(){
     setLoading('loading')
     if (selectedRadioOption === "search_city_name"){
-      const res = await fetch (`http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`, {
-        method: 'GET',
-      })
-      const resJSON = await res.json()
-      setCoordinates([resJSON[0].lon,resJSON[0].lat])
+      if (cityName.current.value === ""){
+        setLoading('data_error')
+      } else {
+        axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
+          if (response.data[0] && response.data[0].lon && response.data[0].lat){
+            setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
+          } else {
+            setLoading('data_error')
+          }
+        }).catch(() => {
+            setLoading("data_error")
+        });
+      }
     } else if (selectedRadioOption === "search_zipcode"){
-      const res = await fetch (`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`, {
-        method: 'GET',
-      })
-      const resJSON = await res.json()
-      setCoordinates([resJSON.lon,resJSON.lat])
+      if (zipCode.current.value === ""){
+        setLoading('data_error')
+      } else {
+        axios.get(`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
+          if (response.data.lon && response.data.lat){
+            setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
+          } else {
+            setLoading('data_error')
+          }
+        }).catch(() => {
+            setLoading("data_error")
+        });
+      }
     } else {
-      // Handle empty input
       if (lat.current.value === "" || lon.current.value === ""){
         setLoading('data_error')
       } else {
@@ -84,7 +78,6 @@ function App() {
         }
       }
     }
-
   }
 
   return (
@@ -110,7 +103,7 @@ function App() {
           selectedRadioOption === "search_zipcode"?
           <div style = {{marginTop:'0.5%'}}>
           Zip Code<br/>
-          <input type="text" ref={zipCode} placeholder="Zipcode"/>
+          <input type="number" ref={zipCode} placeholder="Zipcode"/>
           <br/></div>:
           null
         }
