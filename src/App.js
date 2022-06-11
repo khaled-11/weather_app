@@ -13,14 +13,35 @@ function App() {
   const zipCode = React.useRef();
   const cityName = React.useRef();
 
+  // Use Effect hook to call the API
+  React.useEffect(() => {
+    fetchAPI()
+  }, [coordinates])
+
+  // Function to call the weather API
+  async function fetchAPI(){  
+    console.log("API Call")
+    const res = await fetch (`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`, {
+      method: 'GET',
+    })
+    const resJSON = await res.json()
+    if (resJSON.cod === 200){
+      setTimeout(function(){
+        setWeatherData(resJSON)
+        setLoading('data_loaded')
+      }, 200)
+    } else {
+      setLoading('data_error')
+    }
+  }
+
   // Function to handle radio options change
   async function handleRadioChange(e) {
     setSelectedRadioOption(e.target.value)
-    setLoading("loading")
   }
 
   async function handleSearchButtonClick(){
-    setLoading("loaded")
+    setLoading("data_loaded")
   }
 
   return (
@@ -71,7 +92,53 @@ function App() {
         loaded === "loading"?
         <p>Loading ....</p>
         :
-        null
+        loaded === "data_loaded"?
+        <div style={{textAlign:'left'}}>
+          <p style={{textTransform: 'capitalize'}}>
+          <span style={{fontWeight: 'bold'}}>Coordinates</span>: Longitude: {weatherData.coord.lon}, Latitude: {weatherData.coord.lat}
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Location Name</span>: {weatherData.name}
+          <br/>
+          <span style={{fontWeight: 'bold'}}>General</span>: {weatherData.weather[0].description}
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Temperature</span>: {weatherData.main.temp} ℉
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Feels Like</span>: {weatherData.main.feels_like} ℉
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Minimum Temperature</span>: {weatherData.main.temp_min} ℉
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Maximum Temperature</span>: {weatherData.main.temp_max} ℉
+          <br/>
+          {
+            weatherData.weather[0].main === "Snow"?
+              <span style={{fontWeight: 'bold'}}>Snow volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {weatherData.snow['1h']} mm</span><br/></span>
+            :null
+          }
+          {
+            weatherData.weather[0].main === "Rain"?
+              <span style={{fontWeight: 'bold'}}>Rain volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {weatherData.rain['1h']} mm</span><br/></span>
+              :null
+          }
+          <span style={{fontWeight: 'bold'}}>Humidity</span>: {weatherData.main.humidity} %
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Atmospheric pressure</span>: {weatherData.main.pressure} hPa
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Visibility</span>: {weatherData.visibility} Meter
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Wind Speed</span>: {weatherData.wind.speed} Meter/Sec
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Wind Direction</span>: {weatherData.wind.deg} Degrees
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Cloudiness</span>: {weatherData.clouds.all} %
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Sunrise</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(weatherData.sys.sunrise*1000)}
+          <br/>
+          <span style={{fontWeight: 'bold'}}>Sunset</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(weatherData.sys.sunset*1000)}
+          <br/>          
+          </p>
+        </div>
+        :
+        <p>Error, no data!<br/>Please try again.</p>
       }
       </div>
     </div>
