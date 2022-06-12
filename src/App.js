@@ -1,11 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import Body from './App_Body'
-import Search from './Search'
-import Radios from './Radios'
+import RadiosOptions from './radios'
+import WeatherDisplay from './weather_display'
+import SearchBox from './search'
+import Container from "react-bootstrap/Container";
 
 // The main app function
-function App() {
+export default function App() {
   // console.log("function reload")
   // State hooks for radio options, gps coordinates, weather data, and loading status.
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
@@ -21,28 +22,35 @@ function App() {
 
   // Use Effect hook to call the API
   React.useEffect(() => {
-    console.log("ONE API Call")
-    setTimeout(function(){
-      axios.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&exclude=minutely,hourly,alerts&units=imperial`).then((response) => {
-        console.log(response.data) 
-        setWeatherData(response.data)
-        setLoadingStatus('data_loaded')
-      }).catch(() => {
+    console.log("APIs Call")
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((current) => { 
+      axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
+        setTimeout(function(){
+          setWeatherData({current:current.data, forecast:forecast.data})
+          setLoadingStatus("data_loaded")
+        },100)
+      }).catch((e) => {
         setLoadingStatus("data_error")
       });
-    },100)
+    }).catch(() => {
+      setLoadingStatus("data_error")
+    });
   }, [coordinates])
+
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
     // console.log("Radio Change")
     if (e.target.value === "new_york"){
-      setLoadingStatus("loading")
-      if (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127"){
+      if (loadingStatus==="data_error" || (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127")){
+        setLoadingStatus("loading")
         setCoordinates(["-74.006","40.7127"])
         setLastSearchData({cityName:"new york", zipCode:""})
       } else {
-        setLoadingStatus('data_loaded')
+        setLoadingStatus("loading")
+        setTimeout(function(){
+          setLoadingStatus("data_loaded")
+        })
       }
     }
     setSelectedRadioOption(e.target.value)
@@ -76,40 +84,61 @@ function App() {
       setLoadingStatus('loading')
       if (selectedRadioOption === "search_city_name"){
         if (cityName.current.value === ""){
-          setLoadingStatus('data_error')
+          setTimeout(function(){
+            setLoadingStatus('data_error')
+          })
         } else {
           if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
             setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
             callGeoCodingAPI('city_name')
           } else {
             if (loadingStatus!=="data_error"){
-              setLoadingStatus("data_loaded")
+              setTimeout(function(){
+                setLoadingStatus("data_loaded")
+              })
             } else {
-              setLoadingStatus('data_error')
+              setTimeout(function(){
+                setLoadingStatus('data_error')
+              })
             }
           }
         }
       } else if (selectedRadioOption === "search_zipcode"){
         if (zipCode.current.value === ""){
-          setLoadingStatus('data_error')
+          setTimeout(function(){
+            setLoadingStatus('data_error')
+          })
         } else {
           if(lastSearchData.zipCode!==zipCode.current.value.toString()){
             setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
             callGeoCodingAPI('zipcode')
           } else {
             if (loadingStatus!=="data_error"){
-              setLoadingStatus("data_loaded")
-            } else {
-              setLoadingStatus('data_error')
+              setTimeout(function(){
+                setLoadingStatus("data_loaded")
+              })            } else {
+              setTimeout(function(){
+                setLoadingStatus('data_error')
+              })
             }
           }
         }
       } else {
         if (lat.current.value === "" || lon.current.value === ""){
-          setLoadingStatus('data_error')
+          setTimeout(function(){
+            setLoadingStatus('data_error')
+          })
         } else {
           if (coordinates[0]===lon.current.value && coordinates[1]===lat.current.value){
-            setLoadingStatus("data_loaded")
+            if (loadingStatus!=="data_error"){
+              setTimeout(function(){
+                setLoadingStatus("data_loaded")
+              })            
+            } else {
+              setTimeout(function(){
+                setLoadingStatus('data_error')
+              })
+            }
           } else {
             setCoordinates([lon.current.value, lat.current.value])
             setLastSearchData({cityName:"", zipCode:""})
@@ -121,13 +150,12 @@ function App() {
 
   // The return of the main App function
   return (
-    <div>
-      <div style={{textAlign:'center'}}>
-        <Radios handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></Radios>
-        <Search selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></Search>   
-      </div>
-      <Body weatherData={weatherData} loadingStatus={loadingStatus}></Body>
-    </div>
+    <React.StrictMode >
+      <Container>
+        <RadiosOptions handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></RadiosOptions>
+        <SearchBox selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchBox>   
+        <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>
+      </Container>
+    </React.StrictMode >
   );
 }
-export default App;
