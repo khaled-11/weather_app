@@ -16,7 +16,7 @@ export default function WeatherDisplay(props){
           <Accordion.Body>
             {
               props.loadingStatus === "data_loaded" && props.weatherData.current.id?
-              <WeatherCard weatherData={props.weatherData}></WeatherCard>
+                <WeatherCard weatherData={props.weatherData}></WeatherCard>
               :
                 <p>Error, no data!<br/>Please try again.</p>
             }
@@ -28,19 +28,20 @@ export default function WeatherDisplay(props){
           <Accordion.Body>
             <Tabs defaultActiveKey="home" className="mb-3">
               <Tab eventKey="home" title="Home">
-                {JSON.stringify(props.weatherData.forecast.list)}
+                <WeatherCard weatherData={props.weatherData}></WeatherCard>
               </Tab>
               <Tab eventKey="profile" title="Profile">
-                gdfgfdg
+                <WeatherCard weatherData={props.weatherData}></WeatherCard>
               </Tab>
               <Tab eventKey="contact" title="Contact">
-                hgfhgrt
+                <WeatherCard weatherData={props.weatherData}></WeatherCard>
               </Tab>
               <Tab eventKey="rer" title="rer">
-                hgfhgrt
+                <WeatherCard weatherData={props.weatherData}></WeatherCard>
               </Tab>
             </Tabs>
-              </Accordion.Body>
+            {JSON.stringify(props.weatherData.forecast.list)}
+          </Accordion.Body>
         </Accordion.Item>
       </Accordion>
   )
