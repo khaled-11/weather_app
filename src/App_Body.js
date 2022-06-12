@@ -5,7 +5,7 @@ function Body(props){
         props.loadingStatus === "loading"?
         <p>Loading ....</p>
         :
-        props.loadingStatus === "data_loaded"?
+        props.loadingStatus === "data_loaded" && props.weatherData.id?
         <div style={{textAlign:'left'}}>
           <p style={{textTransform: 'capitalize'}}>
           <span style={{fontWeight: 'bold'}}>Coordinates</span>: Longitude: {props.weatherData.coord.lon}, Latitude: {props.weatherData.coord.lat}

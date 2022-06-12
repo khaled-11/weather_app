@@ -6,7 +6,7 @@ import Radios from './Radios'
 
 // The main app function
 function App() {
-  console.log("function reload")
+  // console.log("function reload")
   // State hooks for radio options, gps coordinates, weather data, and loading status.
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
@@ -34,7 +34,7 @@ function App() {
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
-    console.log("Radio Change")
+    // console.log("Radio Change")
     if (e.target.value === "new_york"){
       setLoadingStatus("loading")
       if (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127"){
@@ -113,11 +113,7 @@ function App() {
         <Radios handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></Radios>
         <Search selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></Search>   
       </div>
-      {weatherData.id?
-        <Body weatherData={weatherData} loadingStatus={loadingStatus}></Body>
-      :
-        <p>Error, no data!<br/>Please try again.</p>
-      }
+      <Body weatherData={weatherData} loadingStatus={loadingStatus}></Body>
     </div>
   );
 }
