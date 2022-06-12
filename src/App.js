@@ -26,6 +26,7 @@ export default function App() {
     axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((current) => { 
       axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
         setTimeout(function(){
+          console.log(current.data)
           setWeatherData({current:current.data, forecast:forecast.data})
           setLoadingStatus("data_loaded")
         },100)

@@ -11,14 +11,14 @@ export default function WeatherDisplay(props){
     :
       <Accordion defaultActiveKey={['0']} alwaysOpen style={{marginTop:"5px"}}>
         <Accordion.Item eventKey="0">
-          <Accordion.Header>Current Weather</Accordion.Header>
+          <Accordion.Header>Current</Accordion.Header>
           <Accordion.Body>
           {
               props.loadingStatus === "data_loaded" && props.weatherData.current.id?
           <Card className="text-center">
-  <Card.Header>{props.weatherData.current.name}</Card.Header>
+  <Card.Header>{props.weatherData.current.name} | {props.weatherData.current.main.temp} ℉</Card.Header>
   <Card.Body>
-    <Card.Title style={{textTransform: 'capitalize'}}>{props.weatherData.current.weather[0].description}</Card.Title>
+    <Card.Title style={{textTransform: 'capitalize'}}>{props.weatherData.current.weather[0].description}<img src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img></Card.Title>
     <Card.Text>
       With supporting text below as a natural lead-in to additional content.
     </Card.Text>
@@ -29,10 +29,7 @@ export default function WeatherDisplay(props){
             
                 // <div style={{textAlign:'left'}}>
                 //   <p style={{textTransform: 'capitalize'}}>
-                //   <span style={{fontWeight: 'bold'}}>General</span>:
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Temperature</span>: {props.weatherData.current.main.temp} ℉
-                //   <br/>
+
                 //   <span style={{fontWeight: 'bold'}}>Feels Like</span>: {props.weatherData.current.main.feels_like} ℉
                 //   <br/>
                 //   <span style={{fontWeight: 'bold'}}>Minimum Temperature</span>: {props.weatherData.current.main.temp_min} ℉
@@ -74,7 +71,7 @@ export default function WeatherDisplay(props){
 
     </Accordion.Item>
 <Accordion.Item eventKey="1">
-<Accordion.Header>Accordion Item #2</Accordion.Header>
+<Accordion.Header>Forecast</Accordion.Header>
 <Accordion.Body>
       <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
         <Tab eventKey="home" title="Home">
