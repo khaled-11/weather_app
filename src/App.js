@@ -11,7 +11,7 @@ function App() {
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
   const [weatherData, setWeatherData] = React.useState({});
-  const [loaded, setLoading] =  React.useState("loading");
+  const [loadingStatus, setLoadingStatus] =  React.useState("loading");
   const [lastSearchData, setLastSearchData] = React.useState({cityName:'new york', zipCode:""});
   // Hooks reference to inputs and functions 
   const lon = React.useRef();
@@ -25,9 +25,9 @@ function App() {
     setTimeout(function(){
       axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
         setWeatherData(response.data)
-        setLoading('data_loaded')
+        setLoadingStatus('data_loaded')
       }).catch(() => {
-        setLoading("data_error")
+        setLoadingStatus("data_error")
       });
     },100)
   }, [coordinates])
@@ -36,12 +36,12 @@ function App() {
   const handleRadioChange = (e) => {
     console.log("Radio Change")
     if (e.target.value === "new_york"){
-      setLoading("loading")
+      setLoadingStatus("loading")
       if (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127"){
         setCoordinates(["-74.006","40.7127"])
-        setLastSearchData({cityName:"", zipCode:""})
+        setLastSearchData({cityName:"new york", zipCode:""})
       } else {
-        setLoading('data_loaded')
+        setLoadingStatus('data_loaded')
       }
     }
     setSelectedRadioOption(e.target.value)
@@ -63,41 +63,41 @@ function App() {
         setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
       }
     }).catch(() => {
-      setLoading("data_error")
+      setLoadingStatus("data_error")
     });
   }
 
   // Function to handle the search button
   const handleSearchButtonClick = () =>{
-    setLoading('loading')
+    setLoadingStatus('loading')
     if (selectedRadioOption === "search_city_name"){
       if (cityName.current.value === ""){
-        setLoading('data_error')
+        setLoadingStatus('data_error')
       } else {
         if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
           setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
           callGeoCodingAPI('city_name')
         } else {
-          setLoading("data_loaded")
+          setLoadingStatus("data_loaded")
         }
       }
     } else if (selectedRadioOption === "search_zipcode"){
       if (zipCode.current.value === ""){
-        setLoading('data_error')
+        setLoadingStatus('data_error')
       } else {
         if(lastSearchData.zipCode!==zipCode.current.value.toString()){
           setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
           callGeoCodingAPI('zipcode')
         } else {
-          setLoading("data_loaded")
+          setLoadingStatus("data_loaded")
         }
       }
     } else {
       if (lat.current.value === "" || lon.current.value === ""){
-        setLoading('data_error')
+        setLoadingStatus('data_error')
       } else {
         if (coordinates[0]===lon.current.value && coordinates[1]===lat.current.value){
-          setLoading("data_loaded")
+          setLoadingStatus("data_loaded")
         } else {
           setCoordinates([lon.current.value, lat.current.value])
           setLastSearchData({cityName:"", zipCode:""})
@@ -106,15 +106,19 @@ function App() {
     }
   }
 
+  // The return of the main App function
   return (
     <div>
       <div style={{textAlign:'center'}}>
         <Radios handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></Radios>
         <Search selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></Search>   
       </div>
-      <Body weatherData={weatherData} loaded={loaded}></Body>
+      {weatherData.id?
+        <Body weatherData={weatherData} loadingStatus={loadingStatus}></Body>
+      :
+        <p>Error, no data!<br/>Please try again.</p>
+      }
     </div>
   );
 }
-
 export default App;

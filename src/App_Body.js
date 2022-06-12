@@ -2,10 +2,10 @@ function Body(props){
     return(
       <div>
       {
-        props.loaded === "loading"?
+        props.loadingStatus === "loading"?
         <p>Loading ....</p>
         :
-        props.loaded === "data_loaded"?
+        props.loadingStatus === "data_loaded"?
         <div style={{textAlign:'left'}}>
           <p style={{textTransform: 'capitalize'}}>
           <span style={{fontWeight: 'bold'}}>Coordinates</span>: Longitude: {props.weatherData.coord.lon}, Latitude: {props.weatherData.coord.lat}
