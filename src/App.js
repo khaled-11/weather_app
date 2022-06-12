@@ -61,6 +61,8 @@ function App() {
         setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
       } else if (response.data[0] && response.data[0].lon && response.data[0].lat){
         setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
+      } else {
+        setLoadingStatus("data_error")
       }
     }).catch(() => {
       setLoadingStatus("data_error")
@@ -69,38 +71,48 @@ function App() {
 
   // Function to handle the search button
   const handleSearchButtonClick = () =>{
-    setLoadingStatus('loading')
-    if (selectedRadioOption === "search_city_name"){
-      if (cityName.current.value === ""){
-        setLoadingStatus('data_error')
-      } else {
-        if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
-          setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
-          callGeoCodingAPI('city_name')
+    if (loadingStatus!=="loading"){
+      setLoadingStatus('loading')
+      if (selectedRadioOption === "search_city_name"){
+        if (cityName.current.value === ""){
+          setLoadingStatus('data_error')
         } else {
-          setLoadingStatus("data_loaded")
+          if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
+            setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
+            callGeoCodingAPI('city_name')
+          } else {
+            if (loadingStatus!=="data_error"){
+              setLoadingStatus("data_loaded")
+            } else {
+              setLoadingStatus('data_error')
+            }
+          }
         }
-      }
-    } else if (selectedRadioOption === "search_zipcode"){
-      if (zipCode.current.value === ""){
-        setLoadingStatus('data_error')
-      } else {
-        if(lastSearchData.zipCode!==zipCode.current.value.toString()){
-          setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
-          callGeoCodingAPI('zipcode')
+      } else if (selectedRadioOption === "search_zipcode"){
+        if (zipCode.current.value === ""){
+          setLoadingStatus('data_error')
         } else {
-          setLoadingStatus("data_loaded")
+          if(lastSearchData.zipCode!==zipCode.current.value.toString()){
+            setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
+            callGeoCodingAPI('zipcode')
+          } else {
+            if (loadingStatus!=="data_error"){
+              setLoadingStatus("data_loaded")
+            } else {
+              setLoadingStatus('data_error')
+            }
+          }
         }
-      }
-    } else {
-      if (lat.current.value === "" || lon.current.value === ""){
-        setLoadingStatus('data_error')
       } else {
-        if (coordinates[0]===lon.current.value && coordinates[1]===lat.current.value){
-          setLoadingStatus("data_loaded")
+        if (lat.current.value === "" || lon.current.value === ""){
+          setLoadingStatus('data_error')
         } else {
-          setCoordinates([lon.current.value, lat.current.value])
-          setLastSearchData({cityName:"", zipCode:""})
+          if (coordinates[0]===lon.current.value && coordinates[1]===lat.current.value){
+            setLoadingStatus("data_loaded")
+          } else {
+            setCoordinates([lon.current.value, lat.current.value])
+            setLastSearchData({cityName:"", zipCode:""})
+          }
         }
       }
     }
