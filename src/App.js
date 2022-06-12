@@ -158,6 +158,7 @@ export default function App() {
         <SearchBox selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchBox>   
         <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>
       </Container>
+      <br/><br/>
     </React.StrictMode >
   );
 }

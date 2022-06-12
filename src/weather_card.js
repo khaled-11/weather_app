@@ -4,7 +4,7 @@ export default function weatherCard(props){
         <Card className="text-center">
         <Card.Header>{props.weatherData.current.name} | {props.weatherData.current.main.temp} ℉</Card.Header>
         <Card.Body>
-          <Card.Title style={{textTransform: 'capitalize', marginLeft:"10px"}}>{props.weatherData.current.weather[0].description}<img alt="icon" src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img><br/></Card.Title>
+          <Card.Title style={{textTransform: 'capitalize', marginLeft:"10px"}}>{props.weatherData.current.weather[0].description}<img style={{minHeight:"50px",minWidth:"50px"}}alt="icon" src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img><br/></Card.Title>
           <Card.Body>
             <p style={{marginTop:"-35px"}}>H: {props.weatherData.current.main.temp_max} ℉ | L: {props.weatherData.current.main.temp_min} ℉<br/>Feels like: {props.weatherData.current.main.feels_like} ℉</p>
             <Row style={{textAlign:"left"}}>
