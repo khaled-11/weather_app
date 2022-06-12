@@ -21,9 +21,10 @@ function App() {
 
   // Use Effect hook to call the API
   React.useEffect(() => {
-    console.log("API Call")
+    console.log("ONE API Call")
     setTimeout(function(){
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((response) => {
+      axios.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&exclude=minutely,hourly,alerts&units=imperial`).then((response) => {
+        console.log(response.data) 
         setWeatherData(response.data)
         setLoadingStatus('data_loaded')
       }).catch(() => {
