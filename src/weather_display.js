@@ -1,4 +1,4 @@
-import {Spinner,Accordion,Tabs,Tab,Card} from "react-bootstrap";
+import {Spinner,Accordion,Tabs,Tab,Card,Col,Row} from "react-bootstrap";
 
 export default function WeatherDisplay(props){
   return(
@@ -18,9 +18,35 @@ export default function WeatherDisplay(props){
           <Card className="text-center">
   <Card.Header>{props.weatherData.current.name} | {props.weatherData.current.main.temp} ℉</Card.Header>
   <Card.Body>
-    <Card.Title style={{textTransform: 'capitalize'}}>{props.weatherData.current.weather[0].description}<img src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img></Card.Title>
+    <Card.Title style={{textTransform: 'capitalize', marginLeft:"10px"}}>{props.weatherData.current.weather[0].description}<img src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img><br/></Card.Title>
     <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
+    <p style={{marginTop:"-20px"}}>H: {props.weatherData.current.main.temp_max} ℉ | L: {props.weatherData.current.main.temp_min} ℉<br/>Feels like: {props.weatherData.current.main.feels_like} ℉</p>
+    <Row style={{textAlign:"left"}}>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Atmospheric pressure</span>: {props.weatherData.current.main.pressure} hPa
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Humidity</span>: {props.weatherData.current.main.humidity} %    
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Visibility</span>: {props.weatherData.current.visibility} Meter
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Wind Speed</span>: {props.weatherData.current.wind.speed} Meter/Sec
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Wind Direction</span>: {props.weatherData.current.wind.deg} Degrees
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Cloudiness</span>: {props.weatherData.current.clouds.all} %
+    </Col>
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Sunrise</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunrise*1000)}
+    </Col>    
+    <Col xs={12} sm={6} md={4}>
+    <span style={{fontWeight: 'bold'}}>Sunset</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunset*1000)}
+    </Col>
+  </Row>
     </Card.Text>
   </Card.Body>
   <Card.Footer className="text-muted">Longitude: {props.weatherData.current.coord.lon}, Latitude: {props.weatherData.current.coord.lat}</Card.Footer>
@@ -30,12 +56,6 @@ export default function WeatherDisplay(props){
                 // <div style={{textAlign:'left'}}>
                 //   <p style={{textTransform: 'capitalize'}}>
 
-                //   <span style={{fontWeight: 'bold'}}>Feels Like</span>: {props.weatherData.current.main.feels_like} ℉
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Minimum Temperature</span>: {props.weatherData.current.main.temp_min} ℉
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Maximum Temperature</span>: {props.weatherData.current.main.temp_max} ℉
-                //   <br/>
                 //   {
                 //     props.weatherData.current.weather[0].main === "Snow"?
                 //       <span style={{fontWeight: 'bold'}}>Snow volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.snow['1h']} mm</span><br/></span>
@@ -46,21 +66,21 @@ export default function WeatherDisplay(props){
                 //       <span style={{fontWeight: 'bold'}}>Rain volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.rain['1h']} mm</span><br/></span>
                 //       :null
                 //   }
-                //   <span style={{fontWeight: 'bold'}}>Humidity</span>: {props.weatherData.current.main.humidity} %
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Atmospheric pressure</span>: {props.weatherData.current.main.pressure} hPa
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Visibility</span>: {props.weatherData.current.visibility} Meter
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Wind Speed</span>: {props.weatherData.current.wind.speed} Meter/Sec
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Wind Direction</span>: {props.weatherData.current.wind.deg} Degrees
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Cloudiness</span>: {props.weatherData.current.clouds.all} %
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Sunrise</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunrise*1000)}
-                //   <br/>
-                //   <span style={{fontWeight: 'bold'}}>Sunset</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunset*1000)}
+                  // <span style={{fontWeight: 'bold'}}>Humidity</span>: {props.weatherData.current.main.humidity} %
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Atmospheric pressure</span>: {props.weatherData.current.main.pressure} hPa
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Visibility</span>: {props.weatherData.current.visibility} Meter
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Wind Speed</span>: {props.weatherData.current.wind.speed} Meter/Sec
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Wind Direction</span>: {props.weatherData.current.wind.deg} Degrees
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Cloudiness</span>: {props.weatherData.current.clouds.all} %
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Sunrise</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunrise*1000)}
+                  // <br/>
+                  // <span style={{fontWeight: 'bold'}}>Sunset</span>: {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(props.weatherData.current.sys.sunset*1000)}
                 //   <br/>          
                 //   </p>
                 // </div>
