@@ -1,6 +1,5 @@
 import {Card,Col,Row} from "react-bootstrap";
 export default function weatherCard(props){
-  console.log(props)
     return(
         <Card className="text-center">
         <Card.Body>
@@ -8,7 +7,7 @@ export default function weatherCard(props){
             props.weatherData.current.name?
               <Card.Header>{props.weatherData.current.name} | {props.weatherData.current.main.temp} ℉</Card.Header>
             :
-              null
+            <Card.Header>{props.weatherData.current.main.temp} ℉</Card.Header>
           }
           <Card.Title style={{textTransform: 'capitalize', marginLeft:"10px"}}>{props.weatherData.current.weather[0].description}<img style={{minHeight:"50px",minWidth:"50px"}}alt="icon" src={`http://openweathermap.org/img/w/${props.weatherData.current.weather[0].icon}.png`}></img><br/></Card.Title>
           <Card.Body>
@@ -51,7 +50,7 @@ export default function weatherCard(props){
               {
                 props.weatherData.current.weather[0].main === "Snow"?
                   <Col>
-                    <span style={{fontWeight: 'bold'}}>Snow volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.snow['1h']} mm</span><br/></span>
+                    <span style={{fontWeight: 'bold'}}>Snow volume for the last {props.weatherData.current.snow['1h']?<span>1 hour</span>:<span>3 hours</span>}<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.snow['1h']?props.weatherData.current.snow['1h']:props.weatherData.current.snow['3h']} mm</span><br/></span>
                   </Col>
                 :
                   null
@@ -59,7 +58,7 @@ export default function weatherCard(props){
               {
                 props.weatherData.current.weather[0].main === "Rain"?
                   <Col>
-                    <span style={{fontWeight: 'bold'}}>Rain volume for the last 1 hour<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.rain['1h']} mm</span><br/></span>
+                    <span style={{fontWeight: 'bold'}}>Rain volume for the last {props.weatherData.current.rain['1h']?<span>1 hour</span>:<span>3 hours</span>}<span style={{fontWeight: 'normal'}}>: {props.weatherData.current.rain['1h']?props.weatherData.current.rain['1h']:props.weatherData.current.rain['3h']} mm</span><br/></span>
                   </Col>
                 :
                   null
