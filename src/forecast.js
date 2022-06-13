@@ -12,7 +12,6 @@ export default function Forecast(props){
         }
     }
     forecastDataMap.forEach((data,dataKey)=>{
-      console.log(data)
       forecastTabs.push(
         <Accordion.Item key={dataKey} eventKey={forecastTabs.length}>
           <Accordion.Header>Forecast ({data[0].dt_txt.split(" ")[0]})</Accordion.Header>
@@ -21,7 +20,7 @@ export default function Forecast(props){
               {
                 data.map((item)=>{
                   return <Tab key={item.dt} eventKey={item.dt} title={item.dt_txt.split(" ")[1]}>
-                    <WeatherCard weatherData={props.weatherData} footer={true}></WeatherCard>
+                    <WeatherCard weatherData={{current:item}}></WeatherCard>
                   </Tab>
                 })
               } 

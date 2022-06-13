@@ -23,7 +23,12 @@ export default function WeatherDisplay(props){
             }
           </Accordion.Body>
         </Accordion.Item>
-        <Forecast weatherData={props.weatherData} forecastData={props.weatherData.forecast}></Forecast>
+        {
+          props.loadingStatus === "data_loaded" && props.weatherData.current.id?
+            <Forecast weatherData={props.weatherData} forecastData={props.weatherData.forecast}></Forecast>
+          :
+            null
+        }
       </Accordion>
   )
 }
