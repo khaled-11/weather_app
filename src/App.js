@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import RadiosOptions from './radios'
+import SearchSection from './search'
 import WeatherDisplay from './weather_display'
-import SearchBox from './search'
 import Container from "react-bootstrap/Container";
 
 // The main app function
@@ -25,20 +25,17 @@ export default function App() {
     console.log("APIs Call")
     axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((current) => { 
       axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
-        setTimeout(function(){
-          console.log(current.data)
-          console.log(forecast.data)
+        setTimeout(()=>{
           setWeatherData({current:current.data, forecast:forecast.data})
           setLoadingStatus("data_loaded")
-        },100)
-      }).catch((e) => {
+        },50)
+      }).catch(() => {
         setLoadingStatus("data_error")
       });
     }).catch(() => {
       setLoadingStatus("data_error")
     });
   }, [coordinates])
-
 
   // Function to handle radio options change
   const handleRadioChange = (e) => {
@@ -49,10 +46,7 @@ export default function App() {
         setCoordinates(["-74.006","40.7127"])
         setLastSearchData({cityName:"new york", zipCode:""})
       } else {
-        setLoadingStatus("loading")
-        setTimeout(function(){
-          setLoadingStatus("data_loaded")
-        })
+        setLoadingStatus("data_loaded")
       }
     }
     setSelectedRadioOption(e.target.value)
@@ -100,12 +94,12 @@ export default function App() {
               })
             } else {
               setTimeout(function(){
-                setLoadingStatus('data_error')
+                setLoadingStatus('data_loaded')
               })
             }
           }
         }
-      } else if (selectedRadioOption === "search_zipcode"){
+      } else if (selectedRadioOption==="search_zipcode"){
         if (zipCode.current.value === ""){
           setTimeout(function(){
             setLoadingStatus('data_error')
@@ -152,13 +146,11 @@ export default function App() {
 
   // The return of the main App function
   return (
-    <React.StrictMode >
-      <Container>
-        <RadiosOptions handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></RadiosOptions>
-        <SearchBox selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchBox>   
-        <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>
-      </Container>
+    <Container>
+      <RadiosOptions handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></RadiosOptions>
+      <SearchSection selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchSection>   
+      <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>
       <br/><br/>
-    </React.StrictMode >
+    </Container>
   );
 }

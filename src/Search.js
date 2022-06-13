@@ -1,6 +1,6 @@
 import {Button,Form,Col,Row} from "react-bootstrap";
 
-export default function SearchBox(props){
+export default function SearchSection(props){
   return(
     <Row className="justify-content-center" style={{textAlign:"center"}}>
       <Col sm={6}>

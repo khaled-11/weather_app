@@ -35,7 +35,12 @@ export default function weatherCard(props){
             </Row>  
           </Card.Body>
         </Card.Body>
-        <Card.Footer className="text-muted">Longitude: {props.weatherData.current.coord.lon}, Latitude: {props.weatherData.current.coord.lat}</Card.Footer>
+        {
+          props.footer?
+            <Card.Footer className="text-muted">Longitude: {props.weatherData.current.coord.lon}, Latitude: {props.weatherData.current.coord.lat}</Card.Footer>
+          :
+            null
+        }
       </Card>
     )
 }

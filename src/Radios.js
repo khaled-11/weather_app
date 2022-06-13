@@ -27,7 +27,7 @@ export default function RadiosOptions(props) {
         inline
         checked={props.selectedRadioOption === "search_zipcode"}
         onChange={props.handleRadioChange}
-        label="By Zip Code"
+        label="By US Zip Code"
         name="group1"
         type='radio'
         value={`search_zipcode`}
