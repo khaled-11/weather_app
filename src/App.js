@@ -7,14 +7,13 @@ import Container from "react-bootstrap/Container";
 
 // The main app function
 export default function App() {
-  // console.log("function reload")
-  // State hooks for radio options, gps coordinates, weather data, and loading status.
+  // State hooks for radio options, gps coordinates, weather data, loading status, and last search query
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
   const [weatherData, setWeatherData] = React.useState({});
   const [loadingStatus, setLoadingStatus] =  React.useState("loading");
   const [lastSearchData, setLastSearchData] = React.useState({cityName:'new york', zipCode:""});
-  // Hooks reference to inputs and functions 
+  // Reference hooks for inputs inputs
   const lon = React.useRef();
   const lat = React.useRef();
   const zipCode = React.useRef();
@@ -23,55 +22,75 @@ export default function App() {
   // Use Effect hook to call the API
   React.useEffect(() => {
     console.log("APIs Call")
+    // Call the current weather API
     axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((current) => { 
+      // Call the forecast API on success
       axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
+        // Update the weather data and loading statue on success
         setTimeout(()=>{
+          console.log(current.data)
+          console.log(forecast.data)
           setWeatherData({current:current.data, forecast:forecast.data})
           setLoadingStatus("data_loaded")
         },50)
       }).catch(() => {
+        // Set loading error
         setLoadingStatus("data_error")
       });
     }).catch(() => {
+      // Set loading error
       setLoadingStatus("data_error")
     });
+    // Execute whenever coordinates change
   }, [coordinates])
-
-  // Function to handle radio options change
-  const handleRadioChange = (e) => {
-    // console.log("Radio Change")
-    if (e.target.value === "new_york"){
-      if (loadingStatus==="data_error" || (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127")){
-        setLoadingStatus("loading")
-        setCoordinates(["-74.006","40.7127"])
-        setLastSearchData({cityName:"new york", zipCode:""})
-      } else {
-        setLoadingStatus("data_loaded")
-      }
-    }
-    setSelectedRadioOption(e.target.value)
-  }
 
   // Function to call the geocoding API
   const callGeoCodingAPI = (type) =>{
-    console.log("Geolocation Call")
+    console.log("Geolocation API Call")
     var url;
+    // Check the search type and select the URL
     if (type === "zipcode"){
       url = `http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode.current.value},us&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`
     } else {
       url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName.current.value}&limit=1&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`
     }
+    // Call the API with the selected URL
     axios.get(url).then((response) => {
+      // Check for the response format and set the coordinates
       if (response.data.lon && response.data.lat){
         setCoordinates([response.data.lon.toString(),response.data.lat.toString()])
       } else if (response.data[0] && response.data[0].lon && response.data[0].lat){
         setCoordinates([parseFloat(response.data[0].lon.toFixed(4)).toString(),parseFloat(response.data[0].lat.toFixed(4)).toString()])
       } else {
+        // Set error if the response is not recognized
         setLoadingStatus("data_error")
       }
     }).catch(() => {
+      // Set error
       setLoadingStatus("data_error")
     });
+  }
+  
+  // Function to handle radio options change
+  const handleRadioChange = (e) => {
+    // Replace the selectedRadioOption with the selected value
+    setSelectedRadioOption(e.target.value)
+    // If the selected option is New York
+    if (e.target.value === "new_york"){
+      setLoadingStatus("loading")
+      // If the last displayed data was error or a different location
+      if (loadingStatus==="data_error" || (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127")){
+        // Update the coordinates
+        setCoordinates(["-74.006","40.7127"])
+        setLastSearchData({cityName:"new york", zipCode:""})
+      // If the last displayed data was New York
+      } else {
+        // Set loading status to reload the weather section
+        setTimeout(()=>{
+          setLoadingStatus("data_loaded")
+        })
+      }
+    }
   }
 
   // Function to handle the search button
@@ -147,6 +166,8 @@ export default function App() {
   // The return of the main App function
   return (
     <Container>
+      <p style={{marginTop:"5px", textAlign:"center"}}>Date and time follows <span style={{fontWeight: 'bold'}}>{Date().toString().match(/\(([^)]+)\)$/)[1]}</span></p>
+      <h3 style={{textAlign:"center"}}><span style={{fontWeight: 'bold'}}>React Weather App</span></h3>
       <RadiosOptions handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></RadiosOptions>
       <SearchSection selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchSection>   
       <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>

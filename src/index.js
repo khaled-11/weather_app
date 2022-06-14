@@ -9,5 +9,5 @@ root.render(
     <App />
 );
 
-// Register Service Worker
+// Register Service Worker for offline use
 serviceWorker.register();

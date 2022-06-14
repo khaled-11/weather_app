@@ -1,14 +1,19 @@
 import Form from "react-bootstrap/Form";
+
+// Function for the radio options
 export default function RadiosOptions(props) {
   return(
-    <div style = {{textAlign:"center", marginTop:"10px"}}>
+    <div style = {{textAlign:"center"}}>
       <Form.Check
         inline
+        // Checked or not based on a state variable
         checked={props.selectedRadioOption === "new_york"}
+        // Call handleRadioChange on change
         onChange={props.handleRadioChange}
         label="New York"
         name="group1"
         type="radio"
+        // The value of this option
         value={`new_york`}
         id={`new_york`}
       />
