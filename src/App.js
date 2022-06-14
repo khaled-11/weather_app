@@ -108,7 +108,7 @@ export default function App() {
         // If the input is not empty
         } else {
           // If the last data was not New York
-          if(lastSearchData.cityName!==cityName.current.value.toLowerCase() && (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127")){
+          if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
             // Update the last search data
             setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
             callGeoCodingAPI('city_name')
