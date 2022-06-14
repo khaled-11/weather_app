@@ -114,9 +114,18 @@ export default function App() {
             callGeoCodingAPI('city_name')
           // If the last data was new york
           } else {
-            setTimeout(()=>{
-              setLoadingStatus("data_loaded")
-            })
+            // Check if the previous search was error or not
+            if (loadingStatus==="data_error"){
+              // Set loading error
+              setTimeout(()=>{
+                setLoadingStatus('data_error')
+              })
+            } else {
+              // Set data loaded
+              setTimeout(()=>{
+                setLoadingStatus("data_loaded")
+              })
+            }
           }
         }
       // If search by zip code
@@ -136,10 +145,18 @@ export default function App() {
             callGeoCodingAPI('zipcode')
           // If the last search value is the same
           } else {
-            // Set data loaded
-            setTimeout(()=>{
-              setLoadingStatus("data_loaded")
-            })
+            // Check if the previous search was error or not
+            if (loadingStatus==="data_error"){
+              // Set loading error
+              setTimeout(()=>{
+                setLoadingStatus('data_error')
+              })
+            } else {
+              // Set data loaded
+              setTimeout(()=>{
+                setLoadingStatus("data_loaded")
+              })
+            }
           }
         }
       // If search by GPS coordinates
