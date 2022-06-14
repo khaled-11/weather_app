@@ -28,8 +28,6 @@ export default function App() {
       axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
         // Update the weather data and loading statue on success
         setTimeout(()=>{
-          console.log(current.data)
-          console.log(forecast.data)
           setWeatherData({current:current.data, forecast:forecast.data})
           setLoadingStatus("data_loaded")
         },50)
@@ -93,67 +91,73 @@ export default function App() {
     }
   }
 
-  // Function to handle the search button
+  // Function to handle the search button click
   const handleSearchButtonClick = () =>{
+    // Check if the status is loading or not to avoid double clicks
     if (loadingStatus!=="loading"){
+      // Set status to loading
       setLoadingStatus('loading')
+      // If search by city name
       if (selectedRadioOption === "search_city_name"){
+        // If the search value is empty
         if (cityName.current.value === ""){
-          setTimeout(function(){
+          // Set loading error
+          setTimeout(()=>{
             setLoadingStatus('data_error')
           })
+        // If the input is not empty
         } else {
-          if(lastSearchData.cityName!==cityName.current.value.toLowerCase()){
+          // If the last data was not New York
+          if(lastSearchData.cityName!==cityName.current.value.toLowerCase() && (coordinates[0]!=="-74.006" && coordinates[1]!=="40.7127")){
+            // Update the last search data
             setLastSearchData({cityName:cityName.current.value.toLowerCase(), zipCode:""})
             callGeoCodingAPI('city_name')
+          // If the last data was new york
           } else {
-            if (loadingStatus!=="data_error"){
-              setTimeout(function(){
-                setLoadingStatus("data_loaded")
-              })
-            } else {
-              setTimeout(function(){
-                setLoadingStatus('data_loaded')
-              })
-            }
+            setTimeout(()=>{
+              setLoadingStatus("data_loaded")
+            })
           }
         }
+      // If search by zip code
       } else if (selectedRadioOption==="search_zipcode"){
+        // If the search value is empty
         if (zipCode.current.value === ""){
-          setTimeout(function(){
+          // Set loading error
+          setTimeout(()=>{
             setLoadingStatus('data_error')
           })
+        // If the input is not empty
         } else {
+          // If the last search value is not the same
           if(lastSearchData.zipCode!==zipCode.current.value.toString()){
+            // Update the last search data
             setLastSearchData({cityName:"", zipCode:zipCode.current.value.toString()})
             callGeoCodingAPI('zipcode')
+          // If the last search value is the same
           } else {
-            if (loadingStatus!=="data_error"){
-              setTimeout(function(){
-                setLoadingStatus("data_loaded")
-              })            } else {
-              setTimeout(function(){
-                setLoadingStatus('data_error')
-              })
-            }
+            // Set data loaded
+            setTimeout(()=>{
+              setLoadingStatus("data_loaded")
+            })
           }
         }
+      // If search by GPS coordinates
       } else {
+        // If the search values are empty
         if (lat.current.value === "" || lon.current.value === ""){
+          // Set loading error
           setTimeout(function(){
             setLoadingStatus('data_error')
           })
+        // If not empty
         } else {
+          // If the input is the same as the last data
           if (coordinates[0]===lon.current.value && coordinates[1]===lat.current.value){
-            if (loadingStatus!=="data_error"){
-              setTimeout(function(){
-                setLoadingStatus("data_loaded")
-              })            
-            } else {
-              setTimeout(function(){
-                setLoadingStatus('data_error')
-              })
-            }
+            setTimeout(()=>{
+              setLoadingStatus("data_loaded")
+            })
+          // Set the coordinates if new values
           } else {
             setCoordinates([lon.current.value, lat.current.value])
             setLastSearchData({cityName:"", zipCode:""})
