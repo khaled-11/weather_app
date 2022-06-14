@@ -18,7 +18,7 @@ export default function WeatherDisplay(props){
     <Accordion defaultActiveKey={['0']} alwaysOpen style={{marginTop:"5px"}}>
       {/* Accordion item for the current weather */}
       <Accordion.Item key={"0"} eventKey="0">
-        <Accordion.Header>Weather Now</Accordion.Header>
+        <Accordion.Header id={"accordion_0"}>Weather Now</Accordion.Header>
         <Accordion.Body>
           {
             // Check whether the data is loaded successfully or there is an error

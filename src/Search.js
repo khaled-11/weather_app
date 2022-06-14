@@ -71,7 +71,7 @@ export default function SearchSection(props){
           props.selectedRadioOption === "search_gps" || props.selectedRadioOption === "search_city_name" || props.selectedRadioOption === "search_zipcode"?
           <div style={{marginBottom:"3px", marginTop:"8px"}} className="d-grid">
             {/* Call the all-in-one search function on button click event */}
-            <Button onClick={props.handleSearchButtonClick} variant="primary" size="sm">Search</Button>
+            <Button id={"search_btn"} onClick={props.handleSearchButtonClick} variant="primary" size="sm">Search</Button>
           </div>
           :
           null

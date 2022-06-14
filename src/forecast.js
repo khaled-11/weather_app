@@ -27,8 +27,8 @@ export default function Forecast(props){
   forecastDataMap.forEach((forecastDay)=>{
     // Append all accordion items to the return array
     forecastTabs.push(
-      <Accordion.Item key={forecastTabs.length} eventKey={forecastTabs.length}>
-        <Accordion.Header>Forecast ({forecastDay[0].browser_date})</Accordion.Header>
+      <Accordion.Item key={forecastTabs.length+1} eventKey={forecastTabs.length+1}>
+        <Accordion.Header id={`accordion_${forecastTabs.length+1}`}>Forecast ({forecastDay[0].browser_date})</Accordion.Header>
         <Accordion.Body>
           {/* Tabs for hourly forecast */}
             <Tabs defaultActiveKey={forecastDay[0].browser_time} className="mb-3">
