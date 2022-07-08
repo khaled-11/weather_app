@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import RadiosOptions from './radios'
 import SearchSection from './search'
@@ -7,10 +8,18 @@ import Container from "react-bootstrap/Container";
 
 // The main app function
 export default function App() {
+  const weatherData = useSelector(state => state.weatherData)
+  const dispatch = useDispatch()
+  const updateData = (data) => {
+    return {
+        type:'UPDATE',
+        data:data
+    };
+  }
   // State hooks for radio options, gps coordinates, weather data, loading status, and last search query
   const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
-  const [weatherData, setWeatherData] = React.useState({});
+  // const [weatherData, setWeatherData] = React.useState({});
   const [loadingStatus, setLoadingStatus] =  React.useState("loading");
   const [lastSearchData, setLastSearchData] = React.useState({cityName:'new york', zipCode:""});
   // Reference hooks for inputs inputs
@@ -28,7 +37,8 @@ export default function App() {
       axios.get(`https://api.openweathermap.org/data/2.5/forecast?lon=${coordinates[0]}&lat=${coordinates[1]}&appid=1604d72c4008fa37d3a0ed877efbc0c4&mode=JSON&units=imperial`).then((forecast) => {
         // Update the weather data and loading statue on success
         setTimeout(()=>{
-          setWeatherData({current:current.data, forecast:forecast.data})
+          dispatch(updateData({current:current.data, forecast:forecast.data}))
+          //setWeatherData({current:current.data, forecast:forecast.data})
           setLoadingStatus("data_loaded")
         },50)
       }).catch(() => {
@@ -40,7 +50,7 @@ export default function App() {
       setLoadingStatus("data_error")
     });
     // Execute whenever coordinates change
-  }, [coordinates])
+  }, [coordinates, dispatch])
 
   // Function to call the geocoding API
   const callGeoCodingAPI = (type) =>{
