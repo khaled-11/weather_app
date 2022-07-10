@@ -5,19 +5,16 @@ import RadiosOptions from './radios'
 import SearchSection from './search'
 import WeatherDisplay from './weather_display'
 import Container from "react-bootstrap/Container";
+import {updateData, updateRadioOption} from "./actions/actions";
 
 // The main app function
 export default function App() {
-  const weatherData = useSelector(state => state.weatherData)
+  // Redux
+  const selectedRadioOption = useSelector(state => state.selectedRadioOption)
   const dispatch = useDispatch()
-  const updateData = (data) => {
-    return {
-        type:'UPDATE',
-        data:data
-    };
-  }
+
   // State hooks for radio options, gps coordinates, weather data, loading status, and last search query
-  const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
+  // const [selectedRadioOption, setSelectedRadioOption] = React.useState('new_york');
   const [coordinates, setCoordinates] = React.useState(["-74.006","40.7127"])
   // const [weatherData, setWeatherData] = React.useState({});
   const [loadingStatus, setLoadingStatus] =  React.useState("loading");
@@ -82,7 +79,9 @@ export default function App() {
   // Function to handle radio options change
   const handleRadioChange = (e) => {
     // Replace the selectedRadioOption with the selected value
-    setSelectedRadioOption(e.target.value)
+    // setSelectedRadioOption(e.target.value)
+    console.log(e.target.value)
+    dispatch(updateRadioOption(e.target.value))
     // If the selected option is New York
     if (e.target.value === "new_york"){
       setLoadingStatus("loading")
@@ -199,9 +198,9 @@ export default function App() {
     <Container>
       <p style={{marginTop:"5px", textAlign:"center"}}>Date and time follows <span style={{fontWeight: 'bold'}}>{Date().toString().match(/\(([^)]+)\)$/)[1]}</span></p>
       <h3 style={{textAlign:"center"}}><span style={{fontWeight: 'bold'}}>React Weather App</span></h3>
-      <RadiosOptions handleRadioChange={handleRadioChange} selectedRadioOption = {selectedRadioOption}></RadiosOptions>
-      <SearchSection selectedRadioOption={selectedRadioOption} lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchSection>   
-      <WeatherDisplay weatherData={weatherData} loadingStatus={loadingStatus}></WeatherDisplay>
+      <RadiosOptions handleRadioChange={handleRadioChange}></RadiosOptions>
+      <SearchSection lon={lon} lat={lat} zipCode={zipCode} cityName={cityName} handleSearchButtonClick={handleSearchButtonClick}></SearchSection>   
+      <WeatherDisplay loadingStatus={loadingStatus}></WeatherDisplay>
       <br/><br/>
     </Container>
   );

@@ -1,13 +1,15 @@
 import Form from "react-bootstrap/Form";
+import { useSelector } from 'react-redux';
 
 // Function for the radio options
 export default function RadiosOptions(props) {
+  const selectedRadioOption = useSelector(state => state.selectedRadioOption)
   return(
     <div style = {{textAlign:"center"}}>
       <Form.Check
         inline
         // Checked or not based on a state variable
-        checked={props.selectedRadioOption === "new_york"}
+        checked={selectedRadioOption === "new_york"}
         // Call handleRadioChange on change
         onChange={props.handleRadioChange}
         label="New York"
@@ -19,7 +21,7 @@ export default function RadiosOptions(props) {
       />
       <Form.Check
         inline
-        checked={props.selectedRadioOption === "search_city_name"}
+        checked={selectedRadioOption === "search_city_name"}
         onChange={props.handleRadioChange}
         label="By City Name"
         name="group1"
@@ -30,7 +32,7 @@ export default function RadiosOptions(props) {
       <br/>
       <Form.Check
         inline
-        checked={props.selectedRadioOption === "search_zipcode"}
+        checked={selectedRadioOption === "search_zipcode"}
         onChange={props.handleRadioChange}
         label="By US Zip Code"
         name="group1"
@@ -40,7 +42,7 @@ export default function RadiosOptions(props) {
       />
       <Form.Check
         inline
-        checked={props.selectedRadioOption === "search_gps"}
+        checked={selectedRadioOption === "search_gps"}
         onChange={props.handleRadioChange}
         label="By GPS coordinates"
         name="group1"

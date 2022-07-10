@@ -1,9 +1,11 @@
 import {Spinner,Accordion} from "react-bootstrap";
 import WeatherCard from "./weather_card";
 import Forecast from "./forecast";
+import { useSelector } from 'react-redux';
 
 // Function for the weather display section
 export default function WeatherDisplay(props){
+  const weatherData = useSelector(state => state.weatherData)
   return(
     // Check if the data is ready or not
     props.loadingStatus === "loading"?
@@ -24,7 +26,7 @@ export default function WeatherDisplay(props){
             // Check whether the data is loaded successfully or there is an error
             props.loadingStatus === "data_loaded"?
               // Display the current weather card if the data is loaded
-              <WeatherCard weatherData={props.weatherData.current}></WeatherCard>
+              <WeatherCard weatherData={weatherData.current}></WeatherCard>
             :
               // Display error message if there is an error
               <p>Error, no data!<br/>Please try again.</p>
@@ -34,7 +36,7 @@ export default function WeatherDisplay(props){
       {
         // Display the forecast accordion items section if the data is loaded successfully
         props.loadingStatus === "data_loaded"?
-          <Forecast forecastData={props.weatherData.forecast}></Forecast>
+          <Forecast forecastData={weatherData.forecast}></Forecast>
         :
           null
       }
