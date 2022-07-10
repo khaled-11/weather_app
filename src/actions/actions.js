@@ -10,4 +10,26 @@ export const updateRadioOption = (option) => {
         selectedRadio:option
     };
 }
+export const updateCoordinates = (values) => {
+    return {
+        type:'UPDATE_COORDINATES',
+        coordinates:values
+    };
+}
+export const updateLoadingStatus = (status) => {
+    return {
+        type:'UPDATE_LOADING_STATUS',
+        status:status
+    };
+}
+
+export const updateLastSearchData = (searchData) => {
+    return {
+        type:'UPDATE_LAST_SEARCH',
+        searchData:searchData
+    };
+}
+
+
+
 

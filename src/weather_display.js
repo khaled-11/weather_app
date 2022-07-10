@@ -6,9 +6,11 @@ import { useSelector } from 'react-redux';
 // Function for the weather display section
 export default function WeatherDisplay(props){
   const weatherData = useSelector(state => state.weatherData)
+  const loadingStatus = useSelector(state => state.loadingStatus)  
+  
   return(
     // Check if the data is ready or not
-    props.loadingStatus === "loading"?
+    loadingStatus === "loading"?
     // Loading effects if the data is loading
     <div style={{textAlign:"center"}}>
       <br/>
@@ -24,7 +26,7 @@ export default function WeatherDisplay(props){
         <Accordion.Body>
           {
             // Check whether the data is loaded successfully or there is an error
-            props.loadingStatus === "data_loaded"?
+            loadingStatus === "data_loaded"?
               // Display the current weather card if the data is loaded
               <WeatherCard weatherData={weatherData.current}></WeatherCard>
             :
@@ -35,7 +37,7 @@ export default function WeatherDisplay(props){
       </Accordion.Item>
       {
         // Display the forecast accordion items section if the data is loaded successfully
-        props.loadingStatus === "data_loaded"?
+        loadingStatus === "data_loaded"?
           <Forecast forecastData={weatherData.forecast}></Forecast>
         :
           null
